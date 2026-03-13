@@ -98,15 +98,17 @@
         }
 
         /* Configuração exclusiva para a exportação do PDF com Fundo Timbrado */
+        /* CSS Atualizado para centralização */
         .pdf-mode {
             width: 210mm !important;
-            /* Padding ajustado para não encostar nas bordas ou no cabeçalho do seu timbrado */
-            padding: 35mm 15mm 25mm 15mm !important;
+            /* Padding reduzido na esquerda/direira para centralizar na área branca */
+            padding: 35mm 12mm 25mm 12mm !important; 
             background-color: white !important;
             background-image: url('https://luizeduos.github.io/faturamento/Timbrado.png') !important;
-            background-size: 210mm 297mm !important;
-            background-repeat: repeat-y !important;
+            background-size: 100% 100% !important;
+            background-repeat: no-repeat !important;
             margin: 0 auto !important;
+            box-sizing: border-box !important;
         }
     </style>
 </head>
@@ -338,27 +340,28 @@
             const element = document.getElementById('pdf-content');
             const date = new Date().toLocaleString('pt-PT');
             document.getElementById('currentDate').innerText = date;
-
-            // Ativa classes de visualização de PDF
+        
             element.classList.add('pdf-mode');
             document.getElementById('pdf-header').classList.remove('hidden');
             document.getElementById('pdf-footer').classList.remove('hidden');
-
-            // Adiciona classe para marcar cards durante a renderização do PDF
+        
             document.querySelectorAll('.benefit-card').forEach(el => el.classList.add('printing'));
-
+        
             const opt = {
-                // Margem em 0 para garantir que o fundo timbrado vá até a ponta do papel
-                margin: [0, 0, 0, 0],
+                margin: 0, // Removido margem do script para usar o ajuste do CSS
                 filename: `Relatorio_Fiscal_ICMS_SP.pdf`,
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2, useCORS: true, logging: false },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    letterRendering: true 
+                },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
-
+        
             html2pdf().set(opt).from(element).save().then(() => {
-                // Restaura o layout do browser
                 element.classList.remove('pdf-mode');
                 document.getElementById('pdf-header').classList.add('hidden');
                 document.getElementById('pdf-footer').classList.add('hidden');
@@ -379,3 +382,4 @@
 </body>
 
 </html>
+
