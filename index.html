@@ -5,9 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório Pro - Benefícios Fiscais ICMS/SP</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#1a5275',
+                            50: '#f0f4f8',
+                            100: '#d9e4ed',
+                            200: '#b0c5d6',
+                            800: '#1a5275',
+                            900: '#10364d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Biblioteca para PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -41,12 +60,10 @@
                 box-shadow: none !important;
                 border-radius: 8px !important;
                 font-size: 10pt !important;
-                /* Diminui o texto geral na impressão */
             }
 
             .benefit-card .sidebar {
                 width: 120px !important;
-                /* Estreita a barra lateral no PDF */
                 padding: 1rem !important;
             }
 
@@ -56,12 +73,10 @@
 
             .benefit-card .text-5xl {
                 font-size: 2.5rem !important;
-                /* Diminui o CST gigante para caber melhor */
             }
 
             .benefit-card .grid {
                 gap: 4px !important;
-                /* Compacta a lista de produtos */
             }
 
             .pdf-container {
@@ -74,7 +89,7 @@
         }
 
         .benefit-card {
-            transition: transform 0.2s ease, shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .benefit-card:not(.printing):hover {
@@ -82,10 +97,15 @@
             box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1), 0 8px 8px -5px rgba(0, 0, 0, 0.04);
         }
 
+        /* Configuração exclusiva para a exportação do PDF com Fundo Timbrado */
         .pdf-mode {
             width: 210mm !important;
-            padding: 8mm !important;
-            background: white !important;
+            /* Padding ajustado para não encostar nas bordas ou no cabeçalho do seu timbrado */
+            padding: 35mm 15mm 25mm 15mm !important;
+            background-color: white !important;
+            background-image: url('https://luizeduos.github.io/faturamento/Timbrado.png') !important;
+            background-size: 210mm 297mm !important;
+            background-repeat: repeat-y !important;
             margin: 0 auto !important;
         }
     </style>
@@ -95,12 +115,11 @@
 
     <div id="main-content" class="max-w-5xl mx-auto px-4 py-6 md:py-10">
 
-        <!-- Header -->
         <header class="mb-8 no-print">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-200">
+                        <div class="p-2 bg-brand rounded-lg shadow-lg">
                             <i data-lucide="shield-check" class="text-white w-6 h-6"></i>
                         </div>
                         <h1 class="text-2xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
@@ -111,14 +130,13 @@
                 </div>
 
                 <button onclick="downloadPDF()"
-                    class="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 whitespace-nowrap">
+                    class="flex items-center justify-center gap-2 bg-brand hover:bg-brand-900 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 whitespace-nowrap">
                     <i data-lucide="download" class="w-5 h-5"></i>
                     Baixar Relatório PDF
                 </button>
             </div>
         </header>
 
-        <!-- Search and Filters Section -->
         <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 no-print">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="md:col-span-2 relative">
@@ -128,13 +146,13 @@
                         <i data-lucide="search"
                             class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
                         <input type="text" id="searchInput" placeholder="Ex: Cesta básica, SP020, Arroz..."
-                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium">
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl border-none focus:ring-2 focus:ring-brand outline-none transition-all font-medium">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase mb-1.5 ml-1">Filtrar Situação</label>
                     <select id="filterType"
-                        class="w-full px-4 py-3.5 bg-slate-50 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer font-medium appearance-none">
+                        class="w-full px-4 py-3.5 bg-slate-50 rounded-xl border-none focus:ring-2 focus:ring-brand outline-none cursor-pointer font-medium appearance-none">
                         <option value="all">Todos os tipos</option>
                         <option value="20">Redução de Base (CST 20)</option>
                         <option value="30">Isenta com ST (CST 30)</option>
@@ -144,53 +162,45 @@
             </div>
         </div>
 
-        <!-- Info Glossary -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 no-print">
-            <div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
-                    <span class="font-bold text-orange-600">20</span>
+            <div class="bg-brand-50 border border-brand-100 p-4 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+                    <span class="font-bold text-brand">20</span>
                 </div>
-                <div class="text-xs text-orange-800"><strong>Redução:</strong> Carga tributária reduzida (ex: 7% ou
-                    12%).</div>
+                <div class="text-xs text-brand-900"><strong>Redução:</strong> Carga tributária reduzida (ex: 7% ou 12%).</div>
             </div>
-            <div class="bg-purple-50 border border-purple-100 p-4 rounded-xl flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
-                    <span class="font-bold text-purple-600">30</span>
+            <div class="bg-brand-50 border border-brand-100 p-4 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+                    <span class="font-bold text-brand">30</span>
                 </div>
-                <div class="text-xs text-purple-800"><strong>Isenta c/ ST:</strong> Isenção com regras de Substituição
-                    Tributária.</div>
+                <div class="text-xs text-brand-900"><strong>Isenta c/ ST:</strong> Isenção com regras de Substituição Tributária.</div>
             </div>
-            <div class="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                    <span class="font-bold text-green-600">40</span>
+            <div class="bg-brand-50 border border-brand-100 p-4 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+                    <span class="font-bold text-brand">40</span>
                 </div>
-                <div class="text-xs text-green-800"><strong>Isenta:</strong> Operação totalmente livre de ICMS.</div>
+                <div class="text-xs text-brand-900"><strong>Isenta:</strong> Operação totalmente livre de ICMS.</div>
             </div>
         </div>
 
-        <!-- PDF Export Wrapper -->
         <div id="pdf-content" class="pdf-container">
-            <!-- Header exclusivo para o PDF -->
-            <div id="pdf-header" class="hidden border-b-4 border-slate-900 pb-4 mb-6 flex justify-between items-end">
+            <div id="pdf-header" class="hidden border-b-4 border-brand pb-4 mb-6 flex justify-between items-end">
                 <div>
-                    <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Base de Dados Fiscais</h1>
-                    <p class="text-slate-600 text-sm font-bold">Consolidação de Benefícios | RICMS São Paulo</p>
+                    <h1 class="text-2xl font-black text-brand tracking-tight uppercase">Base de Dados Fiscais</h1>
+                    <p class="text-brand-900 text-sm font-bold">Consolidação de Benefícios | RICMS São Paulo</p>
                 </div>
                 <div class="text-right">
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Emissão em</p>
-                    <p id="currentDate" class="text-xs font-bold text-slate-900"></p>
+                    <p id="currentDate" class="text-xs font-bold text-brand"></p>
                 </div>
             </div>
 
-            <!-- Report Grid -->
             <div id="reportContainer" class="grid grid-cols-1 gap-4 md:gap-6">
-                <!-- Data will be loaded here -->
-            </div>
+                </div>
 
-            <!-- Footer exclusivo para o PDF -->
-            <div id="pdf-footer" class="hidden mt-8 pt-4 border-t border-slate-200 text-center">
-                <p class="text-[9px] text-slate-400 font-medium uppercase tracking-widest">Documento Técnico para
-                    Conferência Fiscal • Página 1</p>
+            <div id="pdf-footer" class="hidden mt-8 pt-4 border-t border-brand-200 text-center">
+                <p class="text-[9px] text-brand-800 font-medium uppercase tracking-widest">Documento Técnico para
+                    Conferência Fiscal</p>
             </div>
         </div>
 
@@ -270,32 +280,9 @@
             }
 
             container.innerHTML = filtered.map(group => {
-                let colorClass = "bg-slate-900";
-                let lightColor = "bg-slate-50";
-                let accentColor = "text-slate-600";
-                let borderAccent = "border-slate-200";
-
-                if (group.cst === "20") {
-                    colorClass = "#1a5275";
-                    lightColor = "bg-orange-50";
-                    accentColor = "text-orange-700";
-                    borderAccent = "border-orange-200";
-                } else if (group.cst === "40") {
-                    colorClass = "#1a5275";
-                    lightColor = "bg-emerald-50";
-                    accentColor = "text-emerald-700";
-                    borderAccent = "border-emerald-200";
-                } else if (group.cst === "30") {
-                    colorClass = "#1a5275";
-                    lightColor = "bg-purple-50";
-                    accentColor = "text-purple-700";
-                    borderAccent = "border-purple-200";
-                }
-
                 return `
-                    <div class="benefit-card bg-white rounded-2xl md:rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row">
-                        <!-- Sidebar de Códigos -->
-                        <div class="sidebar p-4 md:p-6 md:w-48 shrink-0 flex flex-col justify-center items-center text-center text-white" style="background-color: ${colorClass};">
+                    <div class="benefit-card bg-white rounded-2xl md:rounded-3xl border border-brand-200 shadow-sm overflow-hidden flex flex-col md:flex-row">
+                        <div class="sidebar p-4 md:p-6 md:w-48 shrink-0 flex flex-col justify-center items-center text-center text-white bg-brand">
                             <span class="text-[9px] uppercase font-bold tracking-[0.2em] opacity-80 mb-1">Cbenef</span>
                             <div class="text-lg md:text-xl font-black mb-3 md:mb-4 tracking-tight code-badge">${group.cbenef}</div>
                             
@@ -305,29 +292,27 @@
                             <div class="text-4xl md:text-5xl font-black code-badge leading-none">${group.cst}</div>
                         </div>
 
-                        <!-- Área de Conteúdo -->
                         <div class="content flex-1 p-5 md:p-7">
                             <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 md:mb-6">
                                 <div class="flex-1">
                                     <h3 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Embasamento Jurídico</h3>
-                                    <div class="flex items-center gap-2 ${accentColor} font-bold text-sm md:text-base">
+                                    <div class="flex items-center gap-2 text-brand font-bold text-sm md:text-base">
                                         <i data-lucide="book" class="w-3.5 h-3.5 shrink-0"></i>
                                         <span>${group.base_legal}</span>
                                     </div>
                                 </div>
-                                <div class="${lightColor} px-2.5 py-1 rounded-lg border ${borderAccent} self-start">
+                                <div class="bg-brand-50 px-2.5 py-1 rounded-lg border border-brand-100 self-start">
                                     <span class="text-[9px] font-bold text-slate-400 uppercase block leading-none mb-1">Tipo</span>
-                                    <span class="text-[11px] font-bold ${accentColor}">${group.tributacao}</span>
+                                    <span class="text-[11px] font-bold text-brand">${group.tributacao}</span>
                                 </div>
                             </div>
 
-                            <!-- Regra de Redução (Destaque) -->
                             ${group.regra_reducao ? `
-                            <div class="mb-4 md:mb-6 p-3.5 rounded-xl md:rounded-2xl bg-orange-50 border border-orange-100 flex items-start gap-3">
-                                <i data-lucide="percent" class="w-4 h-4 text-orange-600 shrink-0 mt-0.5"></i>
+                            <div class="mb-4 md:mb-6 p-3.5 rounded-xl md:rounded-2xl bg-brand-50 border border-brand-100 flex items-start gap-3">
+                                <i data-lucide="percent" class="w-4 h-4 text-brand shrink-0 mt-0.5"></i>
                                 <div>
-                                    <h4 class="text-[9px] font-bold text-orange-800 uppercase tracking-wider mb-0.5">Regra de Cálculo</h4>
-                                    <p class="text-[12px] md:text-sm text-orange-900 font-semibold leading-relaxed">${group.regra_reducao}</p>
+                                    <h4 class="text-[9px] font-bold text-brand uppercase tracking-wider mb-0.5">Regra de Cálculo</h4>
+                                    <p class="text-[12px] md:text-sm text-brand-900 font-semibold leading-relaxed">${group.regra_reducao}</p>
                                 </div>
                             </div>
                             ` : ''}
@@ -336,7 +321,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2">
                                 ${group.itens.map(item => `
                                     <div class="flex items-start gap-2 p-2 bg-slate-50 rounded-lg border border-slate-100">
-                                        <i data-lucide="check" class="w-3 h-3 ${accentColor} shrink-0 mt-1"></i>
+                                        <i data-lucide="check" class="w-3 h-3 text-brand shrink-0 mt-1"></i>
                                         <span class="text-[11px] md:text-xs font-medium text-slate-700 leading-snug">${item}</span>
                                     </div>
                                 `).join('')}
@@ -363,12 +348,12 @@
             document.querySelectorAll('.benefit-card').forEach(el => el.classList.add('printing'));
 
             const opt = {
-                margin: [8, 0, 8, 5],
+                // Margem em 0 para garantir que o fundo timbrado vá até a ponta do papel
+                margin: [0, 0, 0, 0],
                 filename: `Relatorio_Fiscal_ICMS_SP.pdf`,
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 1, useCORS: true, logging: false },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                // Garante que não quebre blocos com classe específica
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
@@ -393,6 +378,4 @@
     </script>
 </body>
 
-
 </html>
-
