@@ -276,17 +276,17 @@
                 let borderAccent = "border-slate-200";
 
                 if (group.cst === "20") {
-                    colorClass = "bg-orange-600";
+                    colorClass = "#1a5275";
                     lightColor = "bg-orange-50";
                     accentColor = "text-orange-700";
                     borderAccent = "border-orange-200";
                 } else if (group.cst === "40") {
-                    colorClass = "bg-emerald-600";
+                    colorClass = "#1a5275";
                     lightColor = "bg-emerald-50";
                     accentColor = "text-emerald-700";
                     borderAccent = "border-emerald-200";
                 } else if (group.cst === "30") {
-                    colorClass = "bg-purple-600";
+                    colorClass = "#1a5275";
                     lightColor = "bg-purple-50";
                     accentColor = "text-purple-700";
                     borderAccent = "border-purple-200";
@@ -295,7 +295,7 @@
                 return `
                     <div class="benefit-card bg-white rounded-2xl md:rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row">
                         <!-- Sidebar de Códigos -->
-                        <div class="sidebar ${colorClass} p-4 md:p-6 md:w-48 shrink-0 flex flex-col justify-center items-center text-center text-white">
+                        <div class="sidebar p-4 md:p-6 md:w-48 shrink-0 flex flex-col justify-center items-center text-center text-white" style="background-color: ${colorClass};">
                             <span class="text-[9px] uppercase font-bold tracking-[0.2em] opacity-80 mb-1">Cbenef</span>
                             <div class="text-lg md:text-xl font-black mb-3 md:mb-4 tracking-tight code-badge">${group.cbenef}</div>
                             
@@ -395,3 +395,4 @@
 
 
 </html>
+
