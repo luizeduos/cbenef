@@ -35,6 +35,22 @@
             font-family: 'Inter', sans-serif;
         }
 
+        .item-card {
+            transition: all 0.2s ease;
+        }
+        
+        .item-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .ncm-badge {
+            transition: all 0.2s ease;
+        }
+        
+        .ncm-badge:hover {
+            transform: scale(1.03);
+        }
+
         /* Estilos específicos para a geração do PDF e Impressão */
         @media print {
             .no-print {
@@ -346,26 +362,34 @@
                         </div>
 
                         <div class="content flex-1 p-5 md:p-7">
-                            <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 md:mb-6">
+                            <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 mb-4 md:mb-6">
                                 <div class="flex-1">
                                     <h3 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Embasamento Jurídico</h3>
-                                    <div class="flex items-center gap-2 text-brand font-bold text-sm md:text-base">
-                                        <i data-lucide="book" class="w-3.5 h-3.5 shrink-0"></i>
+                                    <div class="flex items-start gap-2 text-brand font-bold text-sm md:text-base">
+                                        <i data-lucide="book-open" class="w-4 h-4 shrink-0 mt-0.5"></i>
                                         <span>${group.base_legal}</span>
                                     </div>
                                 </div>
+                                
+                                <div class="flex items-start lg:justify-end">
+                                    <div class="bg-gradient-to-br from-brand-50 to-white px-3 py-2 rounded-xl border border-brand-100 shadow-sm min-w-[120px]">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block leading-none mb-1">Tipo</span>
+                                        <span class="text-xs font-bold text-brand">${group.tributacao}</span>
+                                    </div>
+                                </div>
                                 ${group.ncm ? `
-                                    <div class="mb-4">
-                                        <h3 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">NCMs Abrangidos</h3>
+                                    <div class="md:col-span-2 mb-1">
+                                        <h3 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">NCMs Abrangidos</h3>
                                         <div class="flex flex-wrap gap-2">
                                             ${group.ncm.map(code => `
-                                                <span class="px-2 py-1 bg-slate-100 border border-slate-200 rounded-md text-[11px] font-semibold text-slate-700">
+                                                <span class="ncm-badge inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-50 border border-brand-100 rounded-full text-[11px] font-bold text-brand shadow-sm">
+                                                    <i data-lucide="tag" class="w-3 h-3"></i>
                                                     ${code}
                                                 </span>
                                             `).join('')}
                                         </div>
                                     </div>
-                                    ` : ''}
+                                ` : ''}
                                 <div class="bg-brand-50 px-2.5 py-1 rounded-lg border border-brand-100 self-start">
                                     <span class="text-[9px] font-bold text-slate-400 uppercase block leading-none mb-1">Tipo</span>
                                     <span class="text-[11px] font-bold text-brand">${group.tributacao}</span>
@@ -382,14 +406,27 @@
                             </div>
                             ` : ''}
 
-                            <h3 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">Produtos e Grupos</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2">
-                                ${group.itens.map(item => `
-                                    <div class="flex items-start gap-2 p-2 bg-slate-50 rounded-lg border border-slate-100">
-                                        <i data-lucide="check" class="w-3 h-3 text-brand shrink-0 mt-1"></i>
-                                        <span class="text-[11px] md:text-xs font-medium text-slate-700 leading-snug">${item}</span>
-                                    </div>
-                                `).join('')}
+                           <h3 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">Produtos e Grupos</h3>
+
+                            <div class="bg-slate-50/80 border border-slate-200 rounded-2xl p-3 md:p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    ${group.itens.map((item, index) => `
+                                        <div class="item-card group flex items-start gap-3 p-3 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-brand-200 hover:shadow-md transition-all">
+                                            <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 border border-brand-100">
+                                                <span class="text-[10px] font-bold text-brand">${index + 1}</span>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-brand shrink-0"></i>
+                                                    <span class="text-[10px] font-bold uppercase tracking-wide text-brand">Item abrangido</span>
+                                                </div>
+                                                <p class="text-[12px] md:text-[13px] font-medium text-slate-700 leading-relaxed break-words">
+                                                    ${item}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
                     </div>
